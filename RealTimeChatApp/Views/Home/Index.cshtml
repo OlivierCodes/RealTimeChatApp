@@ -26,6 +26,17 @@
         const li = document.createElement("li");
         li.textContent = msg;
         document.getElementById("messagesList").appendChild(li);
+
+
+        /*if (Notification.permission === "granted") {
+        new Notification(`${user} sent a new message!`);
+    } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+                new Notification(`${user} sent a new message!`);
+            }
+        });*/ //Afficher une notification
+    
     });
 
     // Démarrer la connexion
