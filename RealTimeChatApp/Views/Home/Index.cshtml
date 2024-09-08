@@ -5,12 +5,18 @@
 <div class="text-center">
 
     <h2>SignalR Chat</h2>
-    <input type="text" id="userInput" placeholder="Your name" /> <br /><br />
-    <input type="text" id="messageInput" placeholder="Your message" /><br /><br />
-    <button id="sendMessageButton">Send</button><br />
+    <input type="text" id="userInput" placeholder="Votre nom" /> <br /><br />
+    <input type="text" id="messageInput" placeholder="Votre message" /><br /><br />
+    <button id="sendMessageButton">Envoyer</button><br />
     <ul id="messagesList"></ul>
 
+    <div>
+        <h1>Clients en ligne</h1>
+        <ul id="userList"></ul>
+    </div>
+
 </div>
+
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
@@ -22,22 +28,38 @@
 
     // Réception des messages du serveur
     connection.on("ReceiveMessage", (user, message) => {
+        //Ajout d'horodatage aux messages
+        const date = new Date();
+        //const time = '${date.getHours()}:${date.getMinutes()}';
+        //const msg = '${time}-${user}: ${message}';
         const msg = `${user}: ${message}`;
         const li = document.createElement("li");
         li.textContent = msg;
         document.getElementById("messagesList").appendChild(li);
 
-
-        /*if (Notification.permission === "granted") {
-        new Notification(`${user} sent a new message!`);
-    } else if (Notification.permission !== "denied") {
-        Notification.requestPermission().then(permission => {
-            if (permission === "granted") {
-                new Notification(`${user} sent a new message!`);
-            }
-        });*/ //Afficher une notification
-    
+        //Gestion des notifications
+        if (Notification.permission === "granted") {
+            new Notification(`${user} a envoyé un nouveau message!`);
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    new Notification(`${user} a envoyé un nouveau message!`);
+                }
+            });
+        }
     });
+
+
+    // Affichage des utilisateurs en ligne
+    connection.on("UpdateUserList", (users) => {
+        const userList = document.getElementById("userList");
+        userList.innerHTML = '';
+        users.forEach(user => { 
+            const li = document.createElement("li");
+            li.textContent = user;
+            userList.appendChild(li);
+        });
+    } );
 
     // Démarrer la connexion
     connection.start().catch(err => console.error(err.toString()));

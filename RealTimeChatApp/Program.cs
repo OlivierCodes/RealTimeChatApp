@@ -20,7 +20,6 @@ if (!app.Environment.IsDevelopment())
 app.MapHub<MyHub>("/myHub");
 
 
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
